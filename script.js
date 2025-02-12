@@ -8,7 +8,16 @@ function sendNumberValue(number) {
 }
 
 function clearCalculator() {
-    calculatorDisplay.textContent = '';
+    calculatorDisplay.textContent = '0';
+}
+
+// Reset Display
+clearBtn.addEventListener('click', clearCalculator);
+
+function addDecimal() {
+    if (!calculatorDisplay.textContent.includes('.')) {
+        calculatorDisplay.textContent += '.';
+    }
 }
 
 inputBtns.forEach((inputButton) => {
