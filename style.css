@@ -1,8 +1,8 @@
-
 html {
   box-sizing: border-box;
 }
 
+/* Page layout and background */
 body {
   margin: 0;
   min-height: 100vh;
@@ -10,16 +10,19 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background: linear-gradient(to right, #0f2027, #203a43, #2c5364); */
+  /* Optional gradient background:
+     background: linear-gradient(to right, #0f2027, #203a43, #2c5364); */
 }
 
+/* Calculator container with gradient background and shadow */
 .calculator {
-  background: white;
+  background: linear-gradient(135deg, #434343, #000000);
   width: 400px;
   border-radius: 12px;
   box-shadow: 0 5px 30px -5px rgba(0, 0, 0, 0.6);
 }
 
+/* Display area for numbers and results */
 .calculator-display {
   background: black;
   color: white;
@@ -32,14 +35,14 @@ body {
 
 .calculator-display h1 {
   margin: 0;
-  padding: 25px;
-  font-size: 45px;
+  padding: 30px;
+  font-size: 60px;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   font-weight: 100;
   overflow-x: auto;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar styles for WebKit browsers */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -56,7 +59,7 @@ body {
   background: #555;
 }
 
-/* Buttons */
+/* Calculator buttons grid layout */
 .calculator-buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -64,14 +67,16 @@ body {
   padding: 10px;
 }
 
+/* General button styling: round shape, aspect ratio, and light background */
 .button {
-  min-height: 50px;
-  font-size: 20px;
+  min-height: 60px;
+  font-size: 22px;
   font-weight: 100;
   border: none;
-  border-radius: 5px;
+  border-radius: 50%;
+  aspect-ratio: 1;
   cursor: pointer;
-  background: rgb(199, 199, 199);
+  background: rgb(239, 239, 244);
 }
 
 .button:hover {
@@ -86,30 +91,84 @@ body {
   outline: none;
 }
 
+/* Operator buttons styled with Apple-like orange background */
 .operator {
-  background: gray;
+  background: #ff9500;
   color: white;
-  font-size: 30px;
+  font-size: 34px;
 }
 
+/* Clear button styling for 'C': light background with contrasting red text */
 .clear {
-  background: rgb(255, 40, 40);
-  color: white;
+  background: rgb(239, 239, 244);
+  color: #ff9500; /* changed: clear button text now red */
+  font-size: 34px;
 }
 
 .clear:hover {
   filter: brightness(90%);
 }
 
+/* Equal sign button styled to match operator buttons */
 .equal-sign {
   grid-column: -2;
   grid-row: 2 / span 4;
-  background: rgb(13, 206, 87);
+  background: #ff9500;
+  color: white;
 }
 
-/* Media Query: Large Smartphone (Vertical) */
+/* Enlarge digit buttons so numbers occupy more space */
+.calculator-buttons button:not(.operator):not(.clear):not(.equal-sign) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+/* Responsive styles for mobile devices */
 @media screen and (max-width: 600px) {
   .calculator {
     width: 95%;
+  }
+  .calculator-display h1 {
+    font-size: 50px;
+    padding: 22px;
+  }
+  .button {
+    min-height: 65px;
+    font-size: 24px;
+  }
+  .calculator-buttons button:not(.operator):not(.clear):not(.equal-sign) {
+    font-size: 32px;
+  }
+  .operator {
+    font-size: 38px;
+  }
+  .clear {
+    font-size: 38px;
+  }
+}
+
+/* Responsive styles for tablet devices */
+@media screen and (min-width: 601px) and (max-width: 1024px) {
+  .calculator {
+    width: 80%;
+  }
+  .calculator-display h1 {
+    font-size: 55px;
+    padding: 28px;
+  }
+  .button {
+    min-height: 55px;
+    font-size: 21px;
+  }
+  .calculator-buttons button:not(.operator):not(.clear):not(.equal-sign) {
+    font-size: 30px;
+  }
+  .operator {
+    font-size: 36px;
+  }
+  .clear {
+    font-size: 36px;
   }
 }

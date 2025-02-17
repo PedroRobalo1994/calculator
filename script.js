@@ -1,5 +1,5 @@
 // This file implements a simple calculator with basic arithmetic operations.
-// It handles number entry, operator functions, and display updates.
+// It provides functions for number entry, operator handling, and display updates.
 
 // Constant declarations
 const calculatorDisplay = document.querySelector('h1'); // Main display element
@@ -20,80 +20,105 @@ let firstValue = 0;
 let operatorValue = '';
 
 /**
- * Appends or replaces the number shown on the display.
- * @param {string} number - The number pressed.
+ * Updates the calculator display when a number button is pressed.
+ * If awaiting a new value, it appends the number; otherwise, it replaces the initial zero.
+ * @param {string} number - The pressed number.
  */
 function sendNumberValue(number) {
     if (awaitingNextValue) {
-        // If awaiting the next value, replace the display content.
-        calculatorDisplay.textContent = number;
+        calculatorDisplay.textContent += number;
         awaitingNextValue = false;
     } else {
-        // Otherwise, append the new number to the existing display content.
         const displayValue = calculatorDisplay.textContent;
         calculatorDisplay.textContent = displayValue === '0' ? number : displayValue + number;
     }
 }
 
 /**
- * Resets the calculator to its initial state.
+ * Resets the calculator state and clears the display.
+ * This function sets the display back to '0' and resets stored values.
  */
 function clearCalculator() {
-    // Reset stored values and refresh display to '0'.
     firstValue = 0;
     operatorValue = '';
     awaitingNextValue = false;
     calculatorDisplay.textContent = '0';
 }
 
-// Attach click event to the clear button to reset the display.
+// Attach click event to the clear button to invoke clearCalculator.
 clearBtn.addEventListener('click', clearCalculator);
 
 /**
- * Adds a decimal point to the current number if needed.
+ * Appends a decimal point to the current number on the display.
+ * Prevents multiple decimals by checking if one already exists.
  */
 function addDecimal() {
-    if (awaitingNextValue) return; // Prevent adding a decimal if waiting for new input.
+    if (awaitingNextValue) return;
     if (!calculatorDisplay.textContent.includes('.')) {
-        // Append a decimal if one does not already exist.
         calculatorDisplay.textContent += '.';
     }
 }
 
 /**
- * Handles the operator input and calculates the result if needed.
+ * Maps an operator to its display equivalent.
+ * Returns 'x' for multiplication and '÷' for division; returns the operator unchanged otherwise.
+ * @param {string} operator - The operator symbol.
+ * @returns {string} - The display equivalent of the operator.
+ */
+function getOperatorDisplay(operator) {
+    if (operator === '*') {
+        return 'x';
+    } else if (operator === '/') {
+        return '÷';
+    } else {
+        return operator;
+    }
+}
+
+/**
+ * Processes the operator input, performs calculations if applicable,
+ * and updates the display with the operator symbol in its display format.
  * @param {string} operator - The operator pressed.
  */
 function useOperator(operator) {
-    const currentValue = Number(calculatorDisplay.textContent); // Obtain current value from display.
+    const currentValue = Number(calculatorDisplay.textContent);
+    
     if (operatorValue && awaitingNextValue) {
-        // Update operator if user changes their selection.
         operatorValue = operator;
+        // Replace the last operator in the display with the new operator.
+        calculatorDisplay.textContent = calculatorDisplay.textContent.slice(0, -1) + getOperatorDisplay(operator);
         return;
     }
+    
     if (!firstValue) {
-        // Store the first value if none exists.
         firstValue = currentValue;
     } else {
-        // Compute the result using the selected operator.
-        const calculation = calculate[operatorValue](firstValue, currentValue);
-        calculatorDisplay.textContent = calculation;
-        firstValue = calculation;
+        // Include the division display symbol '÷' in the regex for correct parsing.
+        const operatorIndex = calculatorDisplay.textContent.search(/[+\-x÷]/);
+        if (operatorIndex !== -1) {
+            const secondNumber = calculatorDisplay.textContent.slice(operatorIndex + 1);
+            if (secondNumber !== '') {
+                const calculation = calculate[operatorValue](firstValue, Number(secondNumber));
+                calculatorDisplay.textContent = calculation;
+                firstValue = calculation;
+            }
+        }
     }
-    awaitingNextValue = true;
+    
     operatorValue = operator;
+    
+    // Append the display format of the operator.
+    calculatorDisplay.textContent += getOperatorDisplay(operator);
+    awaitingNextValue = true;
 }
 
-// Attach click events to each button based on its type.
+// Attach click events to each calculator button based on type.
 inputBtns.forEach((inputButton) => {
     if (inputButton.classList.length === 0) {
-        // Number button: update display with the pressed number.
         inputButton.addEventListener('click', () => sendNumberValue(inputButton.value));
     } else if (inputButton.classList.contains('operator')) {
-        // Operator button: perform corresponding operation.
         inputButton.addEventListener('click', () => useOperator(inputButton.value));
     } else if (inputButton.classList.contains('decimal')) {
-        // Decimal button: add a decimal point.
         inputButton.addEventListener('click', () => addDecimal());
     }
 });
